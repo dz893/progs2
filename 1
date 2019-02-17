@@ -1,0 +1,114 @@
+/* Язык C++ используемый компилятор Dev C++ 5.11
+Данная программа считывает текст из файла 11.txt, который необходимо создать и заполнить перед запуском программы.
+В программе английские и русские буквы с одинаковым написанием объединены.
+Также объединены буквы "ё" и "е".
+Реализовано ограничение длины проверяемых слов.
+При выводе гласных букв также выводится количество их повторений, чтобы упростить проверку
+Приложена ссылка на исходные файлы и скриншоты выполнения на случай, если собъется кириллица
+https://yadi.sk/d/nPMph0_r5y0znA
+*/
+#include <iostream>
+#include <locale.h>
+#include <string.h>
+struct bukvi{
+	int kolvo;
+	std::string bukva;
+};
+int main () {
+    setlocale(LC_ALL, "Rus");
+    bukvi b[11], t;
+    b[0].bukva = 'a';
+    b[1].bukva = 'o';
+    b[2].bukva = 'y';
+    b[3].bukva = 'э';
+    b[4].bukva = 'ы';
+    b[5].bukva = 'я';
+    b[6].bukva = 'ю';
+    b[7].bukva = 'е';
+    b[8].bukva = 'и';
+    b[9].bukva = 'i';
+    b[10].bukva = 'u';
+    
+    int i, j=0, k=0, N, c[100], min, max;
+    
+    std::cout << "введите минимальную длину проверяемого слова " ;
+    std::cin >> min ;
+    std::cout << "введите максимальную длину проверяемого слова " ;
+    std::cin >> max ;    
+    
+    for (i=0; i<100; i++){				// обнуление счетчика каждой буквы и счетчика букв в каждом слове текста
+    	b[i].kolvo=0;
+    	c[i]=0;
+	}
+	
+	char text[100], text2[100][100];
+	
+	FILE * f;							// считывание текста из файла
+	f=fopen("11.txt","r");
+    for (i=0; i<100; i++){			
+    	fscanf (f, "%c", &text[i]);
+	}
+	fclose(f);
+
+	N=strlen(text);	
+	for (i=0; i<N; i++, j++){			// разделение текста по словам
+		if (text[i]!=' ') {				
+			text2[k][j]=text[i];
+			c[k]++;	
+		}
+		else{
+			k++;
+			j=0;
+	
+		}		
+	}	
+	
+	for (i=0; i<k+1; i++){					// подсчет гласных букв в словах, входящих в интервал длины
+		for (j=0; j<c[i]; j++){
+			if (c[i]>=min && c[i]<=max){																
+				if (text2[i][j]=='A' || text2[i][j]=='a' || text2[i][j]=='А' || text2[i][j]=='а')
+					b[0].kolvo++;
+				else if (text2[i][j]=='O' || text2[i][j]=='o' || text2[i][j]=='О' || text2[i][j]=='о')
+					b[1].kolvo++;
+				else if (text2[i][j]=='Y' || text2[i][j]=='y' || text2[i][j]=='У' || text2[i][j]=='у')
+					b[2].kolvo++;
+				else if (text2[i][j]=='Э' || text2[i][j]=='э')
+					b[3].kolvo++;
+				else if (text2[i][j]=='Ы' || text2[i][j]=='ы')
+					b[4].kolvo++;
+				else if (text2[i][j]=='Я' || text2[i][j]=='я')
+					b[5].kolvo++;
+				else if (text2[i][j]=='Ю' || text2[i][j]=='ю')
+					b[6].kolvo++;
+				else if (text2[i][j]=='E' || text2[i][j]=='e' || text2[i][j]=='Е' || text2[i][j]=='е' || text2[i][j]=='Ё' || text2[i][j]=='ё')
+					b[7].kolvo++;
+				else if (text2[i][j]=='И' || text2[i][j]=='и')
+					b[8].kolvo++;
+				else if (text2[i][j]=='I' || text2[i][j]=='i')
+					b[9].kolvo++;
+				else if (text2[i][j]=='U' || text2[i][j]=='u')
+					b[10].kolvo++;
+				else
+					continue;
+				}
+			else
+				continue;
+		}
+	}
+	
+	for(i=0; i<10; i++) {					//сортировка гласных букв в порядке убывания их колличества
+       for(j=0; j<10-i; j++) {  
+           if(b[j].kolvo<b[j+1].kolvo) {           
+              t=b[j];
+              b[j]=b[j+1];
+              b[j+1]=t; 
+           }
+        }
+	}
+	
+	for(i=0; i<11; i++){					// вывод
+		if (b[i].kolvo>0)
+		std::cout << b[i].bukva << " - " << b[i].kolvo << std::endl;
+	}
+	return 0;
+}
